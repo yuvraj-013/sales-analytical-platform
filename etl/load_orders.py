@@ -6,7 +6,7 @@ from psycopg2.extras import execute_batch
 PROCESSED_PATH = "data/processed/*.json"
 
 DB_CONFIG = {
-"host" : "localhost"
+"host" : "localhost",
 "port" : 5432,
 "database" : "sales",
 "user" : "sales_user",
@@ -24,7 +24,7 @@ CREATE_TABLE_SQL = """Create table if not exists fact_sales(
 	);
 """
 
-INSERT INTO fact_sales (
+INSERT_SQL = """INSERT INTO fact_sales (
     order_id, order_date, product_id, quantity, price, revenue, processed_at
 )
 VALUES (%s, %s, %s, %s, %s, %s, %s);
@@ -33,8 +33,8 @@ VALUES (%s, %s, %s, %s, %s, %s, %s);
 def load_orders():
 	files= glob.glob(PROCESSED_PATH)
 	if not files:
-		reaise Exception("NO processed files found")
-	conn = pyyscopg2.connect(**DB_config)
+		raise Exception("NO processed files found")
+	conn = psycopg2.connect(**DB_CONFIG)
 	cursor = conn.cursor()
 	cursor.execute(CREATE_TABLE_SQL)
 	conn.commit()
@@ -57,7 +57,7 @@ def load_orders():
 	conn.commit()
 	cursor.close()
 	conn.close()
-	print(f"loaded {len(rows) records into fact_sales")
+	print(f"loaded {len(rows)} records into fact_sales")
 
-if __name__ = "__main__":
+if __name__ == "__main__":
 	load_orders()
