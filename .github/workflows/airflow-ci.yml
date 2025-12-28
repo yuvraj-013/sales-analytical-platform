@@ -1,0 +1,32 @@
+name: Airflow ETL CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+jobs:
+  validate-etl:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Python syntax check
+        run: |
+          python -m py_compile etl/*.py
+
+      - name: Airflow DAG import check
+        run: |
+          pip install apache-airflow==2.7.2
+          python airflow/dags/sales_etl_dag.py
