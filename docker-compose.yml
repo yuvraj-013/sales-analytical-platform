@@ -1,0 +1,90 @@
+
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    ports:
+      - "5432:5432"
+  mock-orders-api:
+    build: ./scripts
+    container_name: mock_orders_api
+    ports:
+      - "5000:5000"
+
+
+  airflow-webserver:
+    image: apache/airflow:2.7.2
+    depends_on:
+      - postgres
+      - airflow-init
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      _AIRFLOW_WWW-USER-USERNAME: admin
+      _AIRFLOW_WWW_USER_PASSWORD: admin013
+      _AIRFLOW_WWW_USER_ROLE : Admin
+      _AIRFLOW_WWW_USER_EMAIL: admin@example.com
+      AIRFLOW__WEBSERVER__SECRET_KEY: my_super_secret_key_123
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./etl:/opt/airflow/etl
+      - ./data:/opt/airflow/data
+      - ./requirements.txt:/requirements.txt
+    ports:
+      - "8080:8080"
+    command: >
+      bash -c "
+      airflow db migrate &&
+      airflow webserver
+      "
+
+
+  airflow-scheduler:
+    image: apache/airflow:2.7.2
+    depends_on:
+      - postgres
+      - airflow-init
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      _AIRFLOW_WWW-USER-USERNAME: admin
+      _AIRFLOW_WWW_USER_PASSWORD: admin013
+      _AIRFLOW_WWW_USER_ROLE : Admin
+      _AIRFLOW_WWW_USER_EMAIL: admin@example.com
+      AIRFLOW__WEBSERVER__SECRET_KEY: my_super_secret_key_123
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./etl:/opt/airflow/etl
+      - ./data:/opt/airflow/data
+      - ./requirements.txt:/requirements.txt
+    command: scheduler
+
+  airflow-init:
+    image: apache/airflow:2.7.2
+    depends_on:
+      - postgres
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__WEBSERVER__SECRET_KEY: my_super_secret_key_123
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./etl:/opt/airflow/etl
+      - ./data:/opt/airflow/data
+    command: >
+      bash -c "
+      airflow db migrate &&
+      airflow users create
+        --username admin
+        --firstname Admin
+        --lastname User
+        --role Admin
+        --email admin@example.com
+        --password admin013
+      "
+

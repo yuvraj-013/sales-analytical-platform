@@ -3,7 +3,7 @@ import json
 import os
 from datetime import date, datetime
 
-API_URL = "http://127.0.0.1:5000/orders"
+API_URL = "http://mock-orders-api:5000/orders"
 RAW_DATA_DIR = "data/raw"
 
 def extract_orders(extract_date: str):
