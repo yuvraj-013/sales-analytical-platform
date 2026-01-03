@@ -19,11 +19,9 @@ jobs:
         with:
           python-version: "3.9"
 
-      - name: Install Python dependencies
+      - name: Install minimal dependencies
         run: |
-          pip install apache-airflow==2.7.2
-          pip install -r requirements.txt || true
-
+          pip install pendulum psycopg2-binary requests
       - name: Validate ETL scripts
         run: |
           python -m compileall etl/

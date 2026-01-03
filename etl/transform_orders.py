@@ -3,8 +3,8 @@ import glob
 import os
 from datetime import datetime
 
-RAW_DATA_PATH = "data/raw/*.json"
-PROCESSED_DIR = "data/processed"
+RAW_DATA_PATH = "/opt/airflow/data/raw/orders/*.json"
+PROCESSED_DIR = "/opt/airflow/data/processed/orders"
 
 
 def transform_orders():

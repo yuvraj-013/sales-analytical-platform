@@ -3,10 +3,10 @@ import glob
 import psycopg2
 from psycopg2.extras import execute_batch
 
-PROCESSED_PATH = "data/processed/*.json"
+PROCESSED_PATH = "/opt/airflow/data/processed/orders/*.json"
 
 DB_CONFIG = {
-"host" : "localhost",
+"host" : "postgres",
 "port" : 5432,
 "database" : "sales",
 "user" : "sales_user",

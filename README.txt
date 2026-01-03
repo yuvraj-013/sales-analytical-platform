@@ -4,4 +4,4 @@ docker compose exec airflow-webserver airflow users create ^
   --lastname User ^
   --role Admin ^
   --email admin@example.com ^
-  --password admin
+  --password admin013

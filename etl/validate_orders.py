@@ -2,7 +2,7 @@ import json
 import glob
 from datetime import datetime, date
 
-RAW_DATA_PATH = "data/raw/*.json"
+RAW_DATA_PATH = "/opt/airflow/data/raw/orders"
 
 REQUIRED_FIELDS = [
     "order_id",
@@ -41,7 +41,7 @@ def validate_order(order: dict) -> bool:
 
 
 def validate_files():
-    files = glob.glob(RAW_DATA_PATH)
+    files = glob.glob(f"{RAW_DATA_PATH}/*.json")
 
     if not files:
         raise Exception("No raw order files found")

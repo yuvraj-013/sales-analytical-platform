@@ -4,7 +4,7 @@ import os
 from datetime import date, datetime
 
 API_URL = "http://mock-orders-api:5000/orders"
-RAW_DATA_DIR = "data/raw"
+RAW_DATA_DIR = "/opt/airflow/data/raw/orders"
 
 def extract_orders(extract_date: str):
 	response = requests.get(API_URL, params={"date": extract_date})
